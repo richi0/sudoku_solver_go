@@ -4,9 +4,14 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
-	"strconv"
 	"testing"
 )
+
+type Sudoku struct {
+	Id       int
+	Mission  string
+	Solution string
+}
 
 func TestHasDublicate(t *testing.T) {
 	tt := []struct {
@@ -179,28 +184,6 @@ func TestBoardCheck(t *testing.T) {
 			}
 		})
 	}
-}
-
-type Sudoku struct {
-	Id       int
-	Mission  string
-	Solution string
-}
-
-func stringToBoard(s string) *Board {
-	board := &Board{}
-	counter := 0
-	for i := 0; i < 9; i++ {
-		for j := 0; j < 9; j++ {
-			n, err := strconv.Atoi(string(s[counter]))
-			if err != nil {
-				panic("Cannot convert to int")
-			}
-			board[i][j] = n
-			counter++
-		}
-	}
-	return board
 }
 
 func boardToString(board *Board) string {

@@ -1,7 +1,10 @@
 package main
 
 import (
+	"flag"
 	"fmt"
+	"os"
+	"strconv"
 )
 
 type Row [9]int
@@ -95,19 +98,37 @@ func Run(board *Board) *Board {
 	return solution
 }
 
-func main() {
-	b := Board{
-		Row{0, 0, 0, 0, 0, 0, 0, 0, 4},
-		Row{5, 0, 0, 0, 8, 0, 0, 1, 7},
-		Row{0, 2, 0, 5, 0, 0, 0, 0, 0},
-		Row{0, 0, 6, 0, 0, 9, 0, 0, 0},
-		Row{2, 0, 0, 0, 7, 0, 0, 8, 5},
-		Row{0, 0, 0, 0, 0, 0, 3, 0, 0},
-		Row{0, 0, 0, 0, 3, 0, 2, 0, 0},
-		Row{1, 0, 0, 0, 0, 0, 4, 0, 0},
-		Row{0, 9, 0, 0, 0, 7, 0, 3, 1},
+func stringToBoard(s string) *Board {
+	if len(s) != 81 {
+		return nil
 	}
-	solve(&b)
+	board := &Board{}
+	counter := 0
+	for i := 0; i < 9; i++ {
+		for j := 0; j < 9; j++ {
+			n, err := strconv.Atoi(string(s[counter]))
+			if err != nil {
+				panic("Cannot convert to int")
+			}
+			board[i][j] = n
+			counter++
+		}
+	}
+	return board
+}
+
+func main() {
+	flag.Parse()
+	if flag.NArg() == 0 {
+		fmt.Println("No sudoku submitted")
+		os.Exit(1)
+	}
+	mission := stringToBoard(flag.Arg(0))
+	if mission == nil {
+		fmt.Println("Submitted sudoku is invalid")
+		os.Exit(1)
+	}
+	solve(mission)
 	if solution != nil {
 		fmt.Println("Found solution:")
 		for _, row := range solution {
